@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/actionRightLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/alert_right_bg">
+
+        <ImageView
+            android:id="@+id/actionStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:soundEffectsEnabled="false"
+            android:src="@drawable/action_start" />
+
+        <ImageView
+            android:id="@+id/actionShuffle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:soundEffectsEnabled="false"
+            android:src="@drawable/action_shuffle" />
+    </FrameLayout>
+
+
+    <Button
+        android:id="@+id/actionInsurance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:soundEffectsEnabled="false"
+        android:text="保险" />
+
+    <LinearLayout
+        android:id="@+id/bottomController"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/actionSplit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/action_split"
+            android:soundEffectsEnabled="false"
+            android:visibility="invisible" />
+
+        <View
+            android:id="@+id/actionDouble"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/action_double"
+            android:soundEffectsEnabled="false"
+            android:visibility="invisible" />
+
+        <View
+            android:id="@+id/actionHit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/action_hit"
+            android:soundEffectsEnabled="false"
+            android:visibility="invisible" />
+
+        <View
+            android:id="@+id/actionStand"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/action_stand"
+            android:soundEffectsEnabled="false"
+            android:visibility="invisible" />
+    </LinearLayout>
+</RelativeLayout>

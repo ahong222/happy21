@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Happy21</string>
+
+    <string name="dialog_confirm">Ok</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="game_over">This time you got %1d points, do you try again？</string>
+
+    <string name="best">BEST</string>
+    <string name="score">SCORE</string>
+    <string name="start">START</string>
+    <string name="game_over_title">Game Over</string>
+    <string name="enter_nick_name">Please enter you nick name</string>
+    <string name="tips">Tips</string>
+
+
+    <string name="current_score_hint">Credits</string>
+    <string name="current_score">$%1$s</string>
+    <string name="bet_score_hint">Your Bet</string>
+    <string name="bet_score">$%1$s</string>
+
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/table_bg">
+
+    <xin.kotlin.happy21.game.coin.CoinView
+        android:id="@+id/coinView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/information_bottom_height"/>
+
+    <xin.kotlin.happy21.game.card.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/information_bottom_height" />
+
+    <xin.kotlin.happy21.game.ControllerView
+        android:id="@+id/controllerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/information_bottom_height"/>
+
+    <xin.kotlin.happy21.game.InformationView
+        android:id="@+id/informationView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>
