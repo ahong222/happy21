@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
-import android.widget.Toast
 import com.ifnoif.happy21.SoundPoolManager
 import kotlinx.android.synthetic.main.card_layout.view.*
 import kotlinx.android.synthetic.main.controller_layout.view.*
@@ -150,8 +149,8 @@ class GameView : FrameLayout {
     lateinit var bankerCards: ArrayList<Int>
 
     fun showUserCard(array: ArrayList<Int>) {
-        cardView.setUserCard(array)
-        checkUserCards()
+        cardView.setUserCard(array, View.OnClickListener { checkUserCards() })
+        controllerView.hideAllAction()
     }
 
     fun showBankerCard(array: ArrayList<Int>) {
@@ -159,7 +158,6 @@ class GameView : FrameLayout {
     }
 
     fun checkUserCards() {
-        controllerView.hideAllAction()
 
         var point = calculatePoint(userCards)
         showUserPoint(point)
@@ -180,7 +178,7 @@ class GameView : FrameLayout {
      * 检查庄家点数
      */
     fun checkBankCards() {
-        L.d("checkBankCards")
+        L.d("GameView checkBankCards")
         //TODO 检查保险
         cardView.checkOverBankerCard(object:OnClickListener {
             override fun onClick(v: View?) {
@@ -197,7 +195,7 @@ class GameView : FrameLayout {
     }
 
     fun checkWinner() {
-        L.d("checkWinner")
+        L.d("GameView checkWinner")
 
         var bankerPoint = calculatePoint(bankerCards)
         var userPoint = calculatePoint(userCards)
@@ -373,10 +371,13 @@ class GameView : FrameLayout {
      * 专家要牌
      */
     fun onBankerHit() {
+        L.d("GameView onBankerHit")
         var card = cardList.removeAt(0)
         bankerCards.add(card)
-        cardView.addBankerCard(card, View.OnClickListener { checkBankCards() })
-
+        cardView.addBankerCard(card, View.OnClickListener {
+            L.d("GameView onBankerHit callback");
+            checkBankCards()
+        })
     }
 
     fun isBlackJack(userPoint: Int): Boolean {

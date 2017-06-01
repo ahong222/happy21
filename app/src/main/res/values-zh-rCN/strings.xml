@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">决战21点</string>
+
     <string name="dialog_confirm">确定</string>
     <string name="dialog_cancel">取消</string>
     <string name="game_over">本次您获得%1d分,是否再玩一遍？</string>

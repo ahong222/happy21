@@ -43,7 +43,7 @@ class CardView : FrameLayout {
         return resources.getIdentifier(resArray[color] + cardValue.toString(), "drawable", context.packageName)
     }
 
-    fun setUserCard(cards: ArrayList<Int>) {
+    fun setUserCard(cards: ArrayList<Int>, callback: OnClickListener?) {
         userCardsLayout.removeAllViews()
         userCardsLayout.layoutParams.width = 0
 
@@ -66,12 +66,17 @@ class CardView : FrameLayout {
             if (i == 0) {
                 CommonUtils.playHideViewAndShowViewFromTop(imageView, CommonUtils.getViewTop(userCardsLayout).toFloat(), 0L, null)
             } else {
-                CommonUtils.playHideViewAndShowViewFromTop(imageView, CommonUtils.getViewTop(userCardsLayout).toFloat(), 60L, null)
+                CommonUtils.playHideViewAndShowViewFromTop(imageView, CommonUtils.getViewTop(userCardsLayout).toFloat(), 60L, callback)
             }
         }
     }
 
     fun addUserCard(card: Int) {
+        L.d("CardView addUserCard card:${card}")
+        addCard(card, userCardsLayout, null)
+    }
+
+    fun addCard(card: Int, viewGroup:ViewGroup, callback: OnClickListener?) {
         var imageView = ImageView(context)
         var drawable = context.getDrawable(getCardRes(card))
         imageView.setImageDrawable(drawable)
@@ -80,11 +85,11 @@ class CardView : FrameLayout {
         val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         layoutParams.leftMargin = -(drawable.intrinsicWidth - marginPx)
 
-        updateViewWidth(userCardsLayout, marginPx)
-        userCardsLayout.addView(imageView, layoutParams)
+        updateViewWidth(viewGroup, marginPx)
+        viewGroup.addView(imageView, layoutParams)
         SoundPoolManager.play(GameView.MusicType.ShuffleSingle.name)
 
-        CommonUtils.playHideViewAndShowViewFromTop(imageView, CommonUtils.getViewTop(userCardsLayout).toFloat(), 0L, null)
+        CommonUtils.playHideViewAndShowViewFromTop(imageView, CommonUtils.getViewTop(viewGroup).toFloat(), 0L, callback)
     }
 
     fun updateViewWidth(view: View, addWidth: Int) {
@@ -125,27 +130,16 @@ class CardView : FrameLayout {
             bankerCardsLayout.addView(itemView, layoutParams)
 
             if (i == 0) {
-                CommonUtils.playHideViewAndShowViewFromTop(itemView, CommonUtils.getViewTop(userCardsLayout).toFloat(), 0L, null)
+                CommonUtils.playHideViewAndShowViewFromTop(itemView, CommonUtils.getViewTop(bankerCardsLayout).toFloat(), 0L, null)
             } else {
-                CommonUtils.playHideViewAndShowViewFromTop(itemView, CommonUtils.getViewTop(userCardsLayout).toFloat(), 60L, null)
+                CommonUtils.playHideViewAndShowViewFromTop(itemView, CommonUtils.getViewTop(bankerCardsLayout).toFloat(), 60L, null)
             }
         }
     }
 
     fun addBankerCard(card: Int, callback: View.OnClickListener?) {
-        var imageView = ImageView(context)
-        imageView.setImageResource(getCardRes(card))
-        imageView.visibility = View.GONE
-
-        val layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
-        layoutParams.gravity = Gravity.CENTER
-        layoutParams.leftMargin = marginPx * bankerCardsLayout.childCount
-
-        bankerCardsLayout.addView(imageView, layoutParams)
-
-        SoundPoolManager.play(GameView.MusicType.ShuffleSingle.name)
-
-        CommonUtils.playHideViewAndShowViewFromTop(imageView, CommonUtils.getViewTop(userCardsLayout).toFloat(), 0L, callback)
+        L.d("CardView addBankerCard card:${card}")
+        addCard(card, bankerCardsLayout, callback)
     }
 
     //翻开庄家第二张牌

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Happy21</string>
+    <string name="app_name">BlackJack</string>
 
     <string name="dialog_confirm">Ok</string>
     <string name="dialog_cancel">Cancel</string>

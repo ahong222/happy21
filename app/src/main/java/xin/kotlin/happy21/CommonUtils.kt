@@ -80,6 +80,11 @@ class CommonUtils {
                     ScaleAnimation.RELATIVE_TO_SELF, 0.5f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f)
         }
 
+        fun getScaleAnimation(fromScale: Float, targetScale: Float): Animation {
+            return ScaleAnimation(fromScale, targetScale, fromScale, targetScale,
+                    ScaleAnimation.RELATIVE_TO_SELF, 0.5f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f)
+        }
+
         /**
          * 扑克旋转从可见到隐藏
          */
