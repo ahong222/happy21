@@ -14,6 +14,7 @@ import xin.kotlin.happy21.CommonUtils
 import xin.kotlin.happy21.L
 import xin.kotlin.happy21.R
 import xin.kotlin.happy21.game.coin.CoinView.CoinCallback
+import java.util.*
 
 /**
  * Created by shen on 17/5/28.
@@ -40,6 +41,9 @@ class GameView : FrameLayout {
     var betScore: Int = 0
 
     var gameViewCallback: GameViewCallback? = null
+    var isDouble = false
+    var isSplit = false
+    var isHitSecond = false
 
     enum class MusicType(val resId: Int) {
         Bet(R.raw.sound_bet),
@@ -73,6 +77,9 @@ class GameView : FrameLayout {
         for (musicType in musicArray) {
             SoundPoolManager.init(context, musicType.name, musicType.resId)
         }
+
+        userCards = arrayListOf()
+        userCards2 = arrayListOf()
     }
 
     fun initView() {
@@ -97,7 +104,7 @@ class GameView : FrameLayout {
             if (userCardsLayoutTop != 0) {
                 CommonUtils.removeGlobalLayoutListener(this@GameView, this)
                 L.d("initView userCardsLayoutTop:$userCardsLayoutTop")
-                coinView.setLocation(CommonUtils.getViewTop(userCardsLayout) + cardView.blackCard.intrinsicHeight * 3 / 2, CommonUtils.getViewTop(informationView.betLayout) + informationView.betLayout.height / 2)
+                coinView.setLocation(CommonUtils.getViewTop(userCardsLayout) + cardView.blackCard.intrinsicHeight / 2, CommonUtils.getViewTop(informationView.betLayout) + informationView.betLayout.height / 2)
             }
         }
     }
@@ -124,6 +131,9 @@ class GameView : FrameLayout {
         when (state) {
             State.DONE -> {
                 betScore = 0
+                isDouble = false
+                isSplit = false
+                isHitSecond = false
                 coinView.reset()
                 coinView.setMaxCoin(currentScore)
                 informationView.hideResult()
@@ -132,6 +142,8 @@ class GameView : FrameLayout {
                 informationView.showBetScore(0)
 
                 cardView.reset()
+                userCards.clear()
+                userCards2.clear()
 
             }
         }
@@ -146,10 +158,11 @@ class GameView : FrameLayout {
     }
 
     lateinit var userCards: ArrayList<Int>
+    lateinit var userCards2: ArrayList<Int>
     lateinit var bankerCards: ArrayList<Int>
 
     fun showUserCard(array: ArrayList<Int>) {
-        cardView.setUserCard(array, View.OnClickListener { checkUserCards() })
+        cardView.setUserCard(userCardsLayout, array, View.OnClickListener { checkUserCards() })
         controllerView.hideAllAction()
     }
 
@@ -158,19 +171,68 @@ class GameView : FrameLayout {
     }
 
     fun checkUserCards() {
-
-        var point = calculatePoint(userCards)
+        var point = if (isHitSecond) calculatePoint(userCards2) else calculatePoint(userCards)
         showUserPoint(point)
+        var isHitFirst = isSplit && !isHitSecond
+        var isHitSecond = isSplit && isHitSecond
         //TODO 分牌检查
         if (point < 21) {
             //TODO 双倍
-            showOperation(Operation.Hit, Operation.Stand)
+            if (isHitFirst) {
+                showOperation(Operation.Hit, Operation.Stand)
+            } else if (isHitSecond) {
+                showOperation(Operation.Hit, Operation.Stand)
+            } else {
+                if (isDouble) {
+                    stand()
+                } else {
+                    if (gameUtils.getPoint(userCards[0]) == gameUtils.getPoint(userCards[1]) && currentScore >= betScore) {
+                        showOperation(Operation.Split, Operation.Double, Operation.Hit, Operation.Stand)
+                    } else {
+                        showOperation(Operation.Double, Operation.Hit, Operation.Stand)
+                    }
+                }
+            }
+
         } else if (point > 21) {
             //玩家爆掉
-            cardView.checkOverBankerCard(View.OnClickListener { checkWinner() })
+            if (isHitFirst) {
+                onHitSecond()
+            } else {
+                checkOverBankerCard(View.OnClickListener { checkWinner() })
+            }
         } else {
-            //玩家21点,开始看庄家
-            stand()
+            if (isHitFirst) {
+                onHitSecond()
+            } else if (isHitSecond) {
+                stand()
+            } else {
+                //玩家21点,开始看庄家
+                if (userCards.size == 2) {
+                    controllerView.hideAllAction()
+                    checkWinner()//black jack
+                } else {
+                    stand()
+                }
+            }
+        }
+    }
+
+    fun onHitSecond() {
+        isHitSecond = true
+        cardView.isHitSecond = true
+
+        hit()
+    }
+
+    fun hit() {
+        var card = cardList.removeAt(0)
+        if (isHitSecond) {
+            userCards2.add(card)
+            cardView.addUserCard(card, View.OnClickListener { checkUserCards() })
+        } else {
+            userCards.add(card)
+            cardView.addUserCard(card, View.OnClickListener { checkUserCards() })
         }
     }
 
@@ -180,7 +242,7 @@ class GameView : FrameLayout {
     fun checkBankCards() {
         L.d("GameView checkBankCards")
         //TODO 检查保险
-        cardView.checkOverBankerCard(object:OnClickListener {
+        checkOverBankerCard(object : OnClickListener {
             override fun onClick(v: View?) {
                 var point = calculatePoint(bankerCards)
                 showBankerPoint(point)
@@ -194,46 +256,87 @@ class GameView : FrameLayout {
         })
     }
 
-    fun checkWinner() {
-        L.d("GameView checkWinner")
+    fun checkOverBankerCard(callback: View.OnClickListener) {
+        controllerView.hideAllAction()
+        cardView.checkOverBankerCard(callback)
+    }
 
+    fun checkWinner() {
         var bankerPoint = calculatePoint(bankerCards)
         var userPoint = calculatePoint(userCards)
+        var userPoint2 = calculatePoint(userCards2)
+        L.d("GameView checkWinner,bankerPoint:${bankerPoint},userPoint:${userPoint},userPoint2:${userPoint2}")
         var raiseScore = 0
-        if (userPoint > 21) {
-            //玩家爆掉，庄家赢了
-            informationView.showResult(InformationView.PointResult.UserBobLose)
-            raiseScore = -betScore
+        if (isSplit) {
+            var maxUserPoint = Math.max((if (userPoint > 21) 0 else userPoint), (if (userPoint2 > 21) 0 else userPoint2))
+            if (userPoint > 21 && userPoint2 > 21) {
+                L.d("玩家爆掉，庄家赢了")
+                informationView.showResult(InformationView.PointResult.UserBobLose)
+                raiseScore = -betScore
 
-            SoundPoolManager.play(GameView.MusicType.Lost.name)
-        } else if (bankerPoint > 21) {
-            //庄家爆掉，玩家赢了
-            informationView.showResult(InformationView.PointResult.BankerBobLose)
-            raiseScore = betScore
-            if (isBlackJack(userPoint)) {
-                SoundPoolManager.play(GameView.MusicType.Win.name)
-            } else {
-                SoundPoolManager.play(GameView.MusicType.Cheer0.name)
+                SoundPoolManager.play(GameView.MusicType.Lost.name)
+            } else if (bankerPoint > 21 || bankerPoint <= maxUserPoint) {
+                L.d("庄家爆掉，玩家赢了")
+                raiseScore = betScore
+                if (isBlackJack(userPoint)) {
+                    raiseScore += betScore / 4
+                }
+
+                if (isBlackJack(userPoint2)) {
+                    raiseScore += betScore / 4
+                }
+                if (raiseScore > betScore) {
+                    SoundPoolManager.play(GameView.MusicType.Win.name)
+                    informationView.showResult(InformationView.PointResult.BlackJack)
+                } else {
+                    SoundPoolManager.play(GameView.MusicType.Cheer0.name)
+                    informationView.showResult(InformationView.PointResult.BankerBobLose)
+                }
+            } else if (bankerPoint > maxUserPoint) {
+                L.d("庄家赢了")
+                informationView.showResult(InformationView.PointResult.BankerWin)
+                raiseScore = -betScore
+                SoundPoolManager.play(GameView.MusicType.Lost.name)
             }
-        } else if (bankerPoint == userPoint) {
-            //平手
-            informationView.showResult(InformationView.PointResult.Draw)
-            SoundPoolManager.play(GameView.MusicType.Draw.name)
-        } else if (bankerPoint > userPoint) {
-            //庄家赢了
-            informationView.showResult(InformationView.PointResult.BankerWin)
-            raiseScore = -betScore
-            SoundPoolManager.play(GameView.MusicType.Lost.name)
         } else {
-            //玩家赢了
-            informationView.showResult(InformationView.PointResult.UserWin)
-            raiseScore = betScore
-            if (isBlackJack(userPoint)) {
-                SoundPoolManager.play(GameView.MusicType.Win.name)
-            } else {
-                SoundPoolManager.play(GameView.MusicType.Cheer0.name)
-            }
+            if (userPoint > 21) {
+                L.d("玩家爆掉，庄家赢了")
+                informationView.showResult(InformationView.PointResult.UserBobLose)
+                raiseScore = -betScore
 
+                SoundPoolManager.play(GameView.MusicType.Lost.name)
+            } else if (bankerPoint > 21) {
+                L.d("庄家爆掉，玩家赢了")
+                if (isBlackJack(userPoint)) {
+                    raiseScore = betScore * 3 / 2
+                    SoundPoolManager.play(GameView.MusicType.Win.name)
+                    informationView.showResult(InformationView.PointResult.BlackJack)
+                } else {
+                    raiseScore = betScore
+                    SoundPoolManager.play(GameView.MusicType.Cheer0.name)
+                    informationView.showResult(InformationView.PointResult.BankerBobLose)
+                }
+            } else if (bankerPoint == userPoint && !isBlackJack(userPoint)) {
+                L.d("平手")
+                informationView.showResult(InformationView.PointResult.Draw)
+                SoundPoolManager.play(GameView.MusicType.Draw.name)
+            } else if (bankerPoint > userPoint) {
+                L.d("庄家赢了")
+                informationView.showResult(InformationView.PointResult.BankerWin)
+                raiseScore = -betScore
+                SoundPoolManager.play(GameView.MusicType.Lost.name)
+            } else {
+                L.d("玩家赢了")
+                if (isBlackJack(userPoint)) {
+                    raiseScore = betScore * 3 / 2
+                    SoundPoolManager.play(GameView.MusicType.Win.name)
+                    informationView.showResult(InformationView.PointResult.BlackJack)
+                } else {
+                    raiseScore = betScore
+                    SoundPoolManager.play(GameView.MusicType.Cheer0.name)
+                    informationView.showResult(InformationView.PointResult.UserWin)
+                }
+            }
         }
 
         var newScore = currentScore + raiseScore
@@ -249,7 +352,7 @@ class GameView : FrameLayout {
         var ACount = 0//有几张A
         var result = 0
         for (card in cards) {
-            var point = getPoint(card)
+            var point = gameUtils.getPoint(card)
             result += point
             if (point == 1) {
                 ACount++
@@ -259,15 +362,6 @@ class GameView : FrameLayout {
             result += 10;
         }
         return result
-    }
-
-    /**
-     * 单张牌所表示的点数
-     */
-    fun getPoint(card: Int): Int {
-        var cardValue = card % 13
-        cardValue = if (cardValue == 0) 13 else cardValue
-        return (if (cardValue > 10) 10 else cardValue)
     }
 
     fun showUserPoint(point: Int) {
@@ -289,7 +383,10 @@ class GameView : FrameLayout {
                     controllerView.actionSplit.visibility = View.VISIBLE
                 }
                 Operation.Double -> {
-                    controllerView.actionDouble.visibility = View.VISIBLE
+                    if (currentScore >= betScore) {
+                        //积分足够
+                        controllerView.actionDouble.visibility = View.VISIBLE
+                    }
                 }
                 Operation.Hit -> {
                     controllerView.actionHit.visibility = View.VISIBLE
@@ -325,19 +422,26 @@ class GameView : FrameLayout {
         }
 
         override fun onSplit() {
+            coinView.coinCallback?.onPlayedCoin(betScore, betScore * 2)
+            isSplit = true
+            var card = userCards.removeAt(1)
+            userCards2.add(card)
+            cardView.onSplit(card)
 
+            controllerView.onSplit()
+            onHit()
         }
 
         override fun onDouble() {
-
-
+            coinView.coinCallback?.onPlayedCoin(betScore, betScore * 2)
+            //拿一张牌后停牌
+            isDouble = true
+            controllerView.hideAllAction()
+            onHit()
         }
 
         override fun onHit() {
-            var card = cardList.removeAt(0)
-            userCards.add(card)
-            cardView.addUserCard(card)
-            checkUserCards()
+            hit()
         }
 
         override fun onStand() {
@@ -352,7 +456,9 @@ class GameView : FrameLayout {
         if (cardList.size < totalCard / 2) {
             cardList = gameUtils.getWashedCards()
         }
-        userCards = arrayListOf(cardList.removeAt(0), cardList.removeAt(0))//arrayListOf(1, 10)//
+        var blackJackList = if (Random().nextInt(20) == 1) gameUtils.blackJack(cardList) else null
+
+        userCards = blackJackList ?: arrayListOf(cardList.removeAt(0), cardList.removeAt(0))//arrayListOf(1, 10)//
         bankerCards = arrayListOf(cardList.removeAt(0), cardList.removeAt(0))
         showUserCard(userCards!!)
         showBankerCard(bankerCards!!)
@@ -362,13 +468,18 @@ class GameView : FrameLayout {
     }
 
     fun stand() {
-        controllerView.hideAllAction()
+        if (isSplit && !isHitSecond) {
+            onHitSecond()
+        } else {
+            controllerView.hideAllAction()
 
-        checkBankCards()
+            checkBankCards()
+        }
+
     }
 
     /**
-     * 专家要牌
+     * 庄家要牌
      */
     fun onBankerHit() {
         L.d("GameView onBankerHit")

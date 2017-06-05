@@ -146,4 +146,13 @@ class ControllerView : FrameLayout {
     fun hideHalfBlackBackground() {
         setBackgroundResource(R.color.transparent)
     }
+
+    fun onSplit() {
+        hideAction(actionSplit)
+        hideAction(actionDouble)
+    }
+
+    fun hideAction(actionView:View) {
+        actionView.visibility = View.INVISIBLE
+    }
 }

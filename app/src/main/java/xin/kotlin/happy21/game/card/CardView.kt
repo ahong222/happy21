@@ -24,10 +24,15 @@ import xin.kotlin.happy21.game.GameView
  * Created by shen on 17/5/29.
  */
 class CardView : FrameLayout {
+    var isHitSecond = false
+
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
         View.inflate(context, R.layout.card_layout, this)
         var layoutParams = userCardsLayout.layoutParams as LinearLayout.LayoutParams
         layoutParams.bottomMargin = CommonUtils.getScreenWidth(context!!) / 2
+
+        var layoutParams2 = userCardsLayout2.layoutParams as LinearLayout.LayoutParams
+        layoutParams2.bottomMargin = layoutParams.bottomMargin
 
         blackCard = context.resources.getDrawable(R.drawable.card_back, context.theme)
         bankerCardsLayout.minimumHeight = blackCard.intrinsicHeight
@@ -43,40 +48,40 @@ class CardView : FrameLayout {
         return resources.getIdentifier(resArray[color] + cardValue.toString(), "drawable", context.packageName)
     }
 
-    fun setUserCard(cards: ArrayList<Int>, callback: OnClickListener?) {
-        userCardsLayout.removeAllViews()
-        userCardsLayout.layoutParams.width = 0
+    fun setUserCard(viewGroup: ViewGroup, cards: ArrayList<Int>, callback: OnClickListener?) {
+        viewGroup.removeAllViews()
+        viewGroup.layoutParams.width = 0
 
-        var pointWidth = addPointHintView(userCardsLayout, "")
-        userCardsLayout.layoutParams.width = pointWidth
+        var pointWidth = addPointHintView(viewGroup, "")
+        viewGroup.layoutParams.width = pointWidth
 
         for (i in 0..cards.size - 1) {
             var imageView = ImageView(context)
             var drawable = context.getDrawable(getCardRes(cards[i]))
             imageView.setImageDrawable(drawable)
-            imageView.visibility = View.GONE
+            if (cards.size > 1) {
+                imageView.visibility = View.GONE
+            }
 
             val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             layoutParams.gravity = Gravity.CENTER
             layoutParams.leftMargin = if (i == 0) 0 else -(drawable.intrinsicWidth - marginPx)
 
-            updateViewWidth(userCardsLayout, if (i == 0) drawable.intrinsicWidth else marginPx)
-            userCardsLayout.addView(imageView, layoutParams)
+            updateViewWidth(viewGroup, if (i == 0) drawable.intrinsicWidth else marginPx)
+            viewGroup.addView(imageView, layoutParams)
 
-            if (i == 0) {
-                CommonUtils.playHideViewAndShowViewFromTop(imageView, CommonUtils.getViewTop(userCardsLayout).toFloat(), 0L, null)
-            } else {
-                CommonUtils.playHideViewAndShowViewFromTop(imageView, CommonUtils.getViewTop(userCardsLayout).toFloat(), 60L, callback)
+            if (cards.size > 1) {
+                CommonUtils.playHideViewAndShowViewFromTop(imageView, CommonUtils.getViewTop(viewGroup).toFloat(), if (i == cards.size - 1) (if (cards.size == 1) 500L else 60) else 0, if (i == cards.size - 1) callback else null)
             }
         }
     }
 
-    fun addUserCard(card: Int) {
+    fun addUserCard(card: Int, callback: View.OnClickListener?) {
         L.d("CardView addUserCard card:${card}")
-        addCard(card, userCardsLayout, null)
+        addCard(card, if (isHitSecond) userCardsLayout2 else userCardsLayout, callback)
     }
 
-    fun addCard(card: Int, viewGroup:ViewGroup, callback: OnClickListener?) {
+    fun addCard(card: Int, viewGroup: ViewGroup, callback: OnClickListener?) {
         var imageView = ImageView(context)
         var drawable = context.getDrawable(getCardRes(card))
         imageView.setImageDrawable(drawable)
@@ -159,8 +164,13 @@ class CardView : FrameLayout {
     fun reset() {
         userCardsLayout.removeAllViews()
         userCardsLayout.layoutParams.width = 0
+        userCardsLayout2.removeAllViews()
+        userCardsLayout2.layoutParams.width = 0
         bankerCardsLayout.removeAllViews()
         bankerCardsLayout.layoutParams.width = 0
+
+        userCardsLayout2.visibility = View.GONE
+        isHitSecond = false
     }
 
     fun turnCard(cardRootView: View, backId: Int, frontId: Int, callbacks: View.OnClickListener) {
@@ -207,8 +217,14 @@ class CardView : FrameLayout {
     }
 
     fun showUserPoint(point: Int) {
-        if (userCardsLayout.childCount > 0 && userCardsLayout.getChildAt(0) is TextView) {
-            (userCardsLayout.getChildAt(0) as TextView).text = point.toString()
+        if (isHitSecond) {
+            if (userCardsLayout2.childCount > 0 && userCardsLayout2.getChildAt(0) is TextView) {
+                (userCardsLayout2.getChildAt(0) as TextView).text = point.toString()
+            }
+        } else {
+            if (userCardsLayout.childCount > 0 && userCardsLayout.getChildAt(0) is TextView) {
+                (userCardsLayout.getChildAt(0) as TextView).text = point.toString()
+            }
         }
     }
 
@@ -229,5 +245,15 @@ class CardView : FrameLayout {
         layoutParams.topMargin = CommonUtils.dpToPx(context, 5)
         viewGroup.addView(pointHintView, layoutParams)
         return drawable.intrinsicWidth
+    }
+
+    fun onSplit(card: Int) {
+        var view = userCardsLayout.getChildAt(2)
+        userCardsLayout.removeView(view)
+        //TODO  update userCardsLayout
+        userCardsLayout2.visibility = View.VISIBLE
+//        userCardsLayout2.addView(view)
+
+        setUserCard(userCardsLayout2, arrayListOf(card), null)
     }
 }

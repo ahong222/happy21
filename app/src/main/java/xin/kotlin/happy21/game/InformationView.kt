@@ -90,5 +90,6 @@ class InformationView : FrameLayout {
         BankerBobLose(R.drawable.point_banker_bob_lose),
         BankerWin(R.drawable.point_banker_win),
         Draw(R.drawable.point_draw),
+        BlackJack(R.drawable.point_black_jack),
     }
 }

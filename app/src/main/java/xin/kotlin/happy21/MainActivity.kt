@@ -26,6 +26,7 @@ class MainActivity : Activity() {
      */
     val FREE_SCORE = 1000
 
+
     companion object {
         fun start(context: Context) {
             val intent = Intent(context, MainActivity::class.java)
@@ -47,6 +48,7 @@ class MainActivity : Activity() {
         var score = getScore()
         gameView.updateScore(score)
         gameView.init()
+
     }
 
     val helpViewOnClickListener: View.OnClickListener = View.OnClickListener({

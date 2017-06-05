@@ -9,6 +9,8 @@ import kotlinx.android.synthetic.main.activity_welcome.*
 
 class WelcomeActivity : Activity() {
 
+    var mediaManager: MediaManager? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome)
@@ -46,6 +48,26 @@ class WelcomeActivity : Activity() {
                 else -> true
             }
         }
+
+
+        mediaManager = MediaManager()
+        mediaManager?.play(applicationContext, R.raw.sound_background, true)
     }
+
+    override fun onResume() {
+        super.onResume()
+        mediaManager?.start()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mediaManager?.pause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaManager?.stop()
+    }
+
 
 }

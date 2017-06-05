@@ -16,11 +16,32 @@
         android:orientation="horizontal" />
 
     <LinearLayout
-        android:id="@+id/userCardsLayout"
+        android:id="@+id/userCardsParentLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="150dp"
         android:clipChildren="false"
-        android:orientation="horizontal" />
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/userCardsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:clipChildren="false"
+            android:orientation="horizontal"/>
+
+        <LinearLayout
+            android:id="@+id/userCardsLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="10dp"
+            android:clipChildren="false"
+            android:orientation="horizontal"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+
 </LinearLayout>
