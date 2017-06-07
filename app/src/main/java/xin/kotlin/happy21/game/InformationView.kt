@@ -38,8 +38,7 @@ class InformationView : FrameLayout {
         BET,
     }
 
-    fun alertInformation(text: String) {
-        topAlertTextView.text = text
+    fun alertInformation() {
         var animation: Animation = CommonUtils.getAnimationShowFromTop()
         animation.duration = 500
         animation.fillAfter = true

@@ -137,7 +137,7 @@ class GameView : FrameLayout {
                 coinView.reset()
                 coinView.setMaxCoin(currentScore)
                 informationView.hideResult()
-                informationView.alertInformation("请下注")
+                informationView.alertInformation()
                 controllerView.hideAllAction()
                 informationView.showBetScore(0)
 

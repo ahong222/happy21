@@ -5,6 +5,16 @@
     android:orientation="vertical"
     android:background="@drawable/table_bg">
 
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/rule1"
+        android:layout_centerVertical="true"
+        android:paddingBottom="150dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"/>
+
     <xin.kotlin.happy21.game.coin.CoinView
         android:id="@+id/coinView"
         android:layout_width="match_parent"
