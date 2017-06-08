@@ -12,13 +12,10 @@ import kotlinx.android.synthetic.main.help_layout.view.*
 class HelpView : FrameLayout {
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
         View.inflate(context,R.layout.help_layout, this)
-
-
     }
 
     fun setItemClickListener(onClickListener: OnClickListener) {
         back.setOnClickListener(onClickListener)
-        switchVoice.setOnClickListener(onClickListener)
         help.setOnClickListener(onClickListener)
     }
 }

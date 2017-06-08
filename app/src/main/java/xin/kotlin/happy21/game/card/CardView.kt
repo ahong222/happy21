@@ -250,10 +250,8 @@ class CardView : FrameLayout {
     fun onSplit(card: Int) {
         var view = userCardsLayout.getChildAt(2)
         userCardsLayout.removeView(view)
-        //TODO  update userCardsLayout
-        userCardsLayout2.visibility = View.VISIBLE
-//        userCardsLayout2.addView(view)
 
+        userCardsLayout2.visibility = View.VISIBLE
         setUserCard(userCardsLayout2, arrayListOf(card), null)
     }
 }

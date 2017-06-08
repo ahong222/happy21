@@ -88,11 +88,11 @@ class CoinView : FrameLayout {
         var coinViewHeight = getCoinViewHeight()
         var betCoinTop = userCardCenterY - coinViewHeight / 2
         animatorSet.duration = 500
-        var targetTranslation = (userBetHintCenterY - userCardCenterY - coinViewHeight*targetScale/2).toFloat()
+        var targetTranslation = (userBetHintCenterY - userCardCenterY - coinViewHeight * targetScale / 2).toFloat()
         animatorSet.playTogether(ObjectAnimator.ofFloat(betCoin, "translationY", 0F, targetTranslation))
         animatorSet.playTogether(ObjectAnimator.ofFloat(betCoin, "scaleX", 1F, targetScale))
         animatorSet.playTogether(ObjectAnimator.ofFloat(betCoin, "scaleY", 1F, targetScale))
-        animatorSet.addListener(object:AnimatorListenerAdapter(){
+        animatorSet.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationStart(animation: Animator?) {
                 betCoin.removeClickCoinListener()
             }

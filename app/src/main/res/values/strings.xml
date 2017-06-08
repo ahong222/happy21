@@ -18,4 +18,27 @@
     <string name="bet_score_hint">Your Bet</string>
     <string name="bet_score">$%1$s</string>
 
+    <string name="rule_title">Rule Declaration</string>
+    <string name="rule">Count: \r\n cards have 2 points, to 10 points is the card card number; J, Q, K points is 10 points; A has two kinds of algorithm, 1 or 11, if the A count is 11 greater than the sum of 21, A is 1. For example, (A, 8) is 19, and (A, 7, J) is 18.
+\r\n card: \r\n player\'s total number of cards in hand is more than 21 points.
+\r\n Black Jack (BlackJack): \r\n a A with a 10 point card, larger than the other 21 cards, such as (A, Q). Black Jack gets 1.5 times the bet.
+\r\n suspension: \r\n players no longer play cards, wait for other players to operate.
+\r\n wants cards:
+\r\n. leisure home depends on the number of points in his hand to decide whether to card, if you want to card, then the system sends a card to the player. If you want to sign after the total number of more than 21, it burst card game player to lose the game; game points for 21 points, you will no longer be able to; if you want to sign the total points to 21 points, then the game player can continue "to" suspension "or" double card "".
+\r\n. dealer\'s total number of cards is less than 17, then it must be licensed until more than 16. If the dealer\'s total number is equal to or more than 17 points, it must be suspended. If the dealer has A, and A for 11 points, greater than 16 points, do 1 points when less than or equal to 16 points, then the banker\'s own choice whether to brand.
+\r\n \r\n: double double bet (Double) if you have selected two cards, two cards in the premise of not \"Black Jack\", if you think third cards can let you win the dealer\'s hand, you can request a \"double bet\". Your bet will be doubled, and you can only take one extra card.
+\r\n insurance: \r\n sent card if the dealer got Ming A, game player will have the opportunity to buy insurance, the insurance premium is half of the original game player bet. If after the insurance, the banker is Black Jack (ie the dealer\'s other cards for 10, J, Q, K), then need to accompany 2 times the insurance premium to the player, the game is over.
+\r\n. if player chooses insurance:
+\r\n banker is not Black Jack, the dealer first take away the insurance money, and then to the licensing, comparison procedures, and the same as before.
+\r\n if the player gets 21 points, he can still get the full reward.
+\r\n. if players don\'t choose insurance:
+Black Jack \r\n banker, away game player sweepstakes, the end of the game.
+\r\n banker is not Black Jack, still carries on the card, compares and so on the procedure, same as before.
+\r\n pairs: \r\n idle home, you can choose in their own or other idle home bet on the dyad, if the pressure of the idle home to get a pair (ie two of the same kind of card), then bet idle home wins, banker compensate 11 times chips.
+\r\n sub card: \r\n, if the player gets a sub, you can choose sub card, the two cards are divided into two hand cards, by this player one person operation, each hand bet with the beginning of the same bet. After the card can not "double", to get BlackJack card type, only ordinary 21 points.
+\r\n brand comparison
+\r\n all the idle homes are compared with the banker.
+\r\n Black Jack is a special brand, larger than any other card type. In addition to Black Jack, other card types are in point size.
+\r\n banker and idle home number of the same, or all to Black Jack, but for the draw.
+\r\n banker and idle home are all cards, the system judge makers win.</string>
 </resources>

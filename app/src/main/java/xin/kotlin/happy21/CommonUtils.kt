@@ -98,7 +98,7 @@ class CommonUtils {
                     ScaleAnimation.RELATIVE_TO_SELF, 0.5f, ScaleAnimation.RELATIVE_TO_SELF, 0.5f)
         }
 
-        fun playHideViewAndShowViewFromTop(view: View, marginTop: Float, delay: Long, callback:View.OnClickListener?) {
+        fun playHideViewAndShowViewFromTop(view: View, marginTop: Float, delay: Long, callback: View.OnClickListener?) {
             var hideAnimation = CommonUtils.getAnimationHideToTop(marginTop)
             hideAnimation.duration = 0
             hideAnimation.fillAfter = true
@@ -107,7 +107,7 @@ class CommonUtils {
                     var showAnimation = CommonUtils.getAnimationShowFromTop(marginTop)
                     showAnimation.duration = 500
                     showAnimation.fillAfter = true
-                    showAnimation.setAnimationListener(object :Animation.AnimationListener{
+                    showAnimation.setAnimationListener(object : Animation.AnimationListener {
                         override fun onAnimationEnd(animation: Animation?) {
                             callback?.onClick(view)
                         }

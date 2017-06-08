@@ -9,10 +9,9 @@ import android.net.Uri
  */
 
 class MediaManager {
-    lateinit var mediaPlayer: MediaPlayer;
+    var mediaPlayer: MediaPlayer = MediaPlayer()
 
     init {
-        mediaPlayer = MediaPlayer()
         mediaPlayer.setOnPreparedListener({
             L.d("OnPreparedListener")
             mediaPlayer.start()
@@ -20,14 +19,14 @@ class MediaManager {
 
         mediaPlayer.setOnErrorListener({
             mp, what, extra ->
-            L.d("what:${what}, extra:${extra}");
-            true;
+            L.d("what:${what}, extra:${extra}")
+            true
         })
     }
 
-    fun play(context: Context, resId: Int, loop:Boolean) {
-        L.d("start play");
-        mediaPlayer.setDataSource(context, Uri.parse("android.resource://${context.packageName}/${resId}"))
+    fun play(context: Context, resId: Int, loop: Boolean) {
+        L.d("start play")
+        mediaPlayer.setDataSource(context, Uri.parse("android.resource://${context.packageName}/$resId"))
         mediaPlayer.isLooping = loop
         mediaPlayer.prepareAsync()
     }

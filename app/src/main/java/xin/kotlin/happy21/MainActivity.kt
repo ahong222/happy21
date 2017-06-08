@@ -1,13 +1,16 @@
 package xin.kotlin.happy21
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_help.view.*
 import xin.kotlin.happy21.game.GameViewCallback
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,7 +37,6 @@ class MainActivity : Activity() {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             context.startActivity(intent)
-
         }
     }
 
@@ -56,16 +58,16 @@ class MainActivity : Activity() {
         when (v!!.id) {
             R.id.help -> openHelpPage()
             R.id.back -> finish()
-            R.id.switchVoice -> switchVoice()
         }
     })
 
     fun openHelpPage() {
-
-    }
-
-    fun switchVoice() {
-
+        var dialog = Dialog(this, R.style.TransparentDialog)
+        var view = LayoutInflater.from(this).inflate(R.layout.dialog_help, null, false)
+        dialog.setContentView(view)
+        dialog.setCanceledOnTouchOutside(true)
+        view.dialogRootView.setOnClickListener { dialog.dismiss() }
+        dialog.show()
     }
 
     val gameViewCallback: GameViewCallback = object : GameViewCallback {
