@@ -3,7 +3,6 @@ package xin.kotlin.happy21.game
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import com.ifnoif.happy21.SoundPoolManager
 import kotlinx.android.synthetic.main.card_layout.view.*
@@ -94,15 +93,15 @@ class GameView : FrameLayout {
 
         controllerView.actionCallback = actionCallback
 
-        viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
+        this.addOnLayoutChangeListener(onLayoutChangedListener)
     }
 
-    val globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener {
-        override fun onGlobalLayout() {
+    val onLayoutChangedListener: OnLayoutChangeListener = object : OnLayoutChangeListener {
+        override fun onLayoutChange(v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
             //设置筹码的位置
             var userCardsLayoutTop = CommonUtils.getViewTop(userCardsLayout)
             if (userCardsLayoutTop != 0) {
-                CommonUtils.removeGlobalLayoutListener(this@GameView, this)
+                this@GameView.removeOnLayoutChangeListener(this)
                 L.d("initView userCardsLayoutTop:$userCardsLayoutTop")
                 coinView.setLocation(CommonUtils.getViewTop(userCardsLayout) + cardView.blackCard.intrinsicHeight / 2, CommonUtils.getViewTop(informationView.betLayout) + informationView.betLayout.height / 2)
             }

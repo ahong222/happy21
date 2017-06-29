@@ -34,14 +34,6 @@ class CommonUtils {
             return array[1]
         }
 
-        fun removeGlobalLayoutListener(view: View, onGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener) {
-            try {
-                view.viewTreeObserver.removeOnGlobalLayoutListener(onGlobalLayoutListener)
-            } catch (e: Exception) {
-                view.viewTreeObserver.removeGlobalOnLayoutListener(onGlobalLayoutListener)
-            }
-        }
-
         fun getAnimationHideToTop(): Animation {
             return TranslateAnimation(TranslateAnimation.ABSOLUTE, 0F, TranslateAnimation.ABSOLUTE, 0F,
                     TranslateAnimation.RELATIVE_TO_SELF, 0F, TranslateAnimation.RELATIVE_TO_SELF, -1F)

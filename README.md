@@ -1,5 +1,8 @@
 # 欢乐21点
+[![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
+
 happy21 developed with kotlin
+
 
 这是一个用Kotlin写的Android游戏 "决战21点"。适合学习如何用Kotlin开发Android
 
